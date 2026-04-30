@@ -1,118 +1,126 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import {ReactDOM, useEffect} from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { TouchableOpacity, StyleSheet , } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import db from './src/database/db';
+import createTables from './src/database/createTables';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+// Tab Screens
+import HomeScreen from './src/screens/HomeScreen';
+import MapScreen from './src/screens/MapScreen';
+import ChatbotScreen from './src/screens/ChatbotScreen';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+// Extra Screens
+import CreatePlanScreen from './src/screens/CreatePlanScreen';
+import StartNowScreen from './src/screens/StartNowScreen';
+import ViewPlannedScreen from './src/screens/ViewPlannedScreen';
+import ViewDoneScreen from './src/screens/ViewDoneScreen';
+import EditScreen from './src/screens/EditScreen';
+import TimerScreen from './src/screens/TimerScreen';
+const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+
+// Bottom Tab Navigator
+function TabNavigator() {
+
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarShowLabel: false,
+        tabBarStyle: styles.tabBar,
+
+        tabBarIcon: ({ focused }) => {
+          let iconName = '';
+
+          if (route.name === 'Home') iconName = 'home';
+          if (route.name === 'Map') iconName = 'map';
+          if (route.name === 'Chatbot') iconName = 'smart-toy';
+
+          return (
+            <Icon
+              name={iconName}
+              size={28}
+              color={focused ? '#000000' : '#888'}
+            />
+          );
+        },
+      })}
+    >
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Map" component={MapScreen} />
+      <Tab.Screen name="Chatbot" component={ChatbotScreen} />
+    </Tab.Navigator>
   );
 }
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+// Main App
+export default function App() {
 
+    useEffect(() => {
+      createTables();
+    }, []);
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        
+        {/* Bottom Tabs */}
+        <Stack.Screen
+          name="MainTabs"
+          component={TabNavigator}
+        />
+
+        {/* FAB Navigation Screens */}
+        <Stack.Screen
+          name="CreatePlan"
+          component={CreatePlanScreen}
+        />
+
+        <Stack.Screen
+          name="StartNow"
+          component={StartNowScreen}
+        />
+
+        {/*Other */}
+        <Stack.Screen name="ViewPlanned" component={ViewPlannedScreen} />
+        <Stack.Screen name="ViewDone" component={ViewDoneScreen} />
+        <Stack.Screen name="Edit" component={EditScreen} />
+        <Stack.Screen name="Timer" component={TimerScreen} />
+
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
+
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  tabBar: {
+    position: 'absolute',
+    left: 15,
+    right: 15,
+    bottom: 15,
+    height: 60,
+    borderRadius: 20,
+    backgroundColor: '#ffffff',
+    elevation: 8,
+    shadowColor: '#676767',
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+
+  customButton: {
+    top: -20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#1b4788',
+    elevation: 5,
   },
 });
-
-export default App;
