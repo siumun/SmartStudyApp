@@ -109,6 +109,39 @@ const SwipeableTaskCard = ({
   );
 };
 
+const DashboardCards = ({
+  plannedCount,
+  doneCount,
+  doneTasks,
+}: {
+  plannedCount: number;
+  doneCount: number;
+  doneTasks: any[];
+}) => {
+  const totalDuration = doneTasks.reduce((sum, t) => sum + (t.duration || 0), 0);
+  const hours = Math.floor(totalDuration / 60);
+  const mins = totalDuration % 60;
+  const durationLabel = hours > 0
+    ? mins > 0 ? `${hours}h ${mins}m` : `${hours}h`
+    : `${mins}m`;
+ 
+  return (
+    <View style={dashStyles.row}>
+      <View style={[dashStyles.card, dashStyles.cardBlue]}>
+        <Text style={dashStyles.cardValue}>{plannedCount}</Text>
+        <Text style={dashStyles.cardLabel}>Current</Text>
+      </View>
+      <View style={[dashStyles.card, dashStyles.cardGreen]}>
+        <Text style={dashStyles.cardValue}>{doneCount}</Text>
+        <Text style={dashStyles.cardLabel}>Completed</Text>
+      </View>
+      <View style={[dashStyles.card, dashStyles.cardGray]}>
+        <Text style={dashStyles.cardValue}>{totalDuration > 0 ? durationLabel : '—'}</Text>
+        <Text style={dashStyles.cardLabel}>Duration</Text>
+      </View>
+    </View>
+  );
+};
 //--Home Screen--
 
 const HomeScreen = ({ navigation }: any) => {
@@ -119,9 +152,30 @@ const HomeScreen = ({ navigation }: any) => {
     const unsubscribe = navigation.addListener('focus', () => {
       loadPlannedTasks();
       loadDoneTasks();
+      
     });
+    seedTestData();
     return unsubscribe;
   }, [navigation]);
+
+const seedTestData = () => {
+  db.transaction((tx: any) => {
+    // Insert done tasks
+    tx.executeSql(`INSERT INTO tasks (title, status) VALUES ('Design mockup', 'done');`);
+    tx.executeSql(`INSERT INTO tasks (title, status) VALUES ('Write report', 'done');`);
+    tx.executeSql(`INSERT INTO tasks (title, status) VALUES ('Team meeting', 'done');`);
+    // Insert planned tasks
+    tx.executeSql(`INSERT INTO tasks (title, status) VALUES ('Fix bugs', 'planned');`);
+    tx.executeSql(`INSERT INTO tasks (title, status) VALUES ('Code review', 'planned');`);
+    // Insert sessions with duration (minutes)
+    tx.executeSql(`INSERT INTO sessions (task_id, duration) VALUES (1, 90);`);
+    tx.executeSql(`INSERT INTO sessions (task_id, duration) VALUES (2, 45);`);
+    tx.executeSql(`INSERT INTO sessions (task_id, duration) VALUES (3, 120);`);
+  },
+  (error: any) => console.log('Seed error:', error),
+  () => { console.log('Seeded!'); loadPlannedTasks(); loadDoneTasks(); }
+  );
+};
 
   const loadPlannedTasks = () => {
     db.transaction((tx: any) => {
@@ -139,19 +193,22 @@ const HomeScreen = ({ navigation }: any) => {
   };
 
   const loadDoneTasks = () => {
-    db.transaction((tx: any) => {
-      tx.executeSql(
-        "SELECT * FROM tasks WHERE status = 'done';",
-        [],
-        (_: any, results: any) => {
-          const rows = [];
-          for (let i = 0; i < results.rows.length; i++) rows.push(results.rows.item(i));
-          setDoneTask(rows);
-        },
-        (error: any) => { console.log('Error loading done tasks:', error); return true; }
-      );
-    });
-  };
+  db.transaction((tx: any) => {
+    tx.executeSql(
+      `SELECT tasks.*, sessions.duration 
+       FROM tasks 
+       LEFT JOIN sessions ON sessions.task_id = tasks.id
+       WHERE tasks.status = 'done';`,
+      [],
+      (_: any, results: any) => {
+        const rows = [];
+        for (let i = 0; i < results.rows.length; i++) rows.push(results.rows.item(i));
+        setDoneTask(rows);
+      },
+      (error: any) => { console.log('Error loading done tasks:', error); return true; }
+    );
+  });
+};
 
   const deleteTask = useCallback((id: number, status: 'planned' | 'done') => {
     db.transaction((tx: any) => {
@@ -179,6 +236,13 @@ const HomeScreen = ({ navigation }: any) => {
         <Text style={styles.headerSubtitle}>
           {plannedTasks.length + doneTasks.length} total · {doneTasks.length} done
         </Text>
+
+        <DashboardCards
+        plannedCount={plannedTasks.length}
+        doneCount={doneTasks.length}
+        doneTasks={doneTasks}
+        />
+
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
@@ -306,4 +370,36 @@ const styles = StyleSheet.create({
 
   emptyState: { paddingVertical: 20, alignItems: 'center' },
   emptyText: { fontSize: 14, color: '#BBBBBB' },
+});
+
+const dashStyles = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 16,
+  },
+  card: {
+    flex: 1,
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 12,
+    alignItems: 'center',
+  },
+  cardBlue: { backgroundColor: '#EAF2FF' },
+  cardGreen: { backgroundColor: '#EAFAF0' },
+  cardGray: { backgroundColor: '#F0F0EC' },
+  cardValue: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#1A1A1A',
+    letterSpacing: -0.3,
+  },
+  cardLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#999',
+    marginTop: 3,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
 });
