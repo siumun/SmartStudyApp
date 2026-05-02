@@ -111,7 +111,6 @@ const MapScreen = () => {
     };
   }, []);
 
-  // Refetch when filter changes
   useEffect(() => {
     if (position) {
       setPlaces([]);
@@ -132,7 +131,6 @@ const MapScreen = () => {
   return (
     <View style={styles.container}>
 
-      {/* Filter Tabs */}
       <View style={styles.filterRow}>
         <TouchableOpacity
           style={[styles.filterBtn, filter === 'cafe' && styles.filterBtnActive]}
@@ -152,7 +150,6 @@ const MapScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Map */}
       {position ? (
         <MapView
           style={styles.map}
@@ -163,14 +160,12 @@ const MapScreen = () => {
             longitudeDelta: 0.01,
           }}
         >
-          {/* User location marker */}
           <Marker
             coordinate={{ latitude: position.latitude, longitude: position.longitude }}
             title="You are here"
             pinColor="#4A90E2"
           />
 
-          {/* Nearby places markers */}
           {places.map((place) => (
             <Marker
               key={place.place_id}
@@ -193,7 +188,6 @@ const MapScreen = () => {
         </View>
       )}
 
-      {/* Selected place card */}
       {selectedPlace && (
         <View style={styles.placeCard}>
           <Text style={styles.placeName}>{selectedPlace.name}</Text>
@@ -204,7 +198,6 @@ const MapScreen = () => {
         </View>
       )}
 
-      {/* Places list */}
       <View style={styles.listContainer}>
         <Text style={styles.listTitle}>
           {filter === 'cafe' ? '☕ Nearby Cafes' : '📚 Nearby Libraries'} ({places.length})
@@ -234,7 +227,6 @@ const styles = StyleSheet.create({
   loadingContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
   loadingText: { marginTop: 10, fontSize: 14, color: "#666" },
 
-  // Filter
   filterRow: {
     flexDirection: 'row',
     padding: 12,
@@ -254,7 +246,6 @@ const styles = StyleSheet.create({
   filterText: { fontSize: 14, fontWeight: '600', color: '#666' },
   filterTextActive: { color: '#fff' },
 
-  // Map
   map: { flex: 1 },
   mapPlaceholder: {
     flex: 1,
@@ -264,7 +255,6 @@ const styles = StyleSheet.create({
   },
   placeholderText: { color: "#666", fontSize: 14 },
 
-  // Selected place card
   placeCard: {
     position: 'absolute',
     bottom: 160,
@@ -283,7 +273,6 @@ const styles = StyleSheet.create({
   placeAddress: { fontSize: 13, color: '#666', marginTop: 4 },
   dismissText: { fontSize: 13, color: '#4A90E2', marginTop: 8 },
 
-  // List
   listContainer: {
     backgroundColor: '#fff',
     paddingTop: 12,

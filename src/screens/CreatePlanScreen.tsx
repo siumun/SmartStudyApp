@@ -41,6 +41,16 @@ const CreateScreen = ({navigation, route}: any) => {
       return;
     }
 
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const selected = new Date(newdate);
+    selected.setHours(0, 0, 0, 0);
+
+    if (selected < today) {
+    ToastAndroid.showWithGravity('Date must be today or in the future', ToastAndroid.SHORT, ToastAndroid.TOP);
+    return;
+  }
+
     db.transaction((tx: any) => {
       tx.executeSql(
         'INSERT INTO tasks (title, date, status) VALUES (?, ?, ?)',

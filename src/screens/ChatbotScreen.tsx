@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: 15,
         paddingVertical: 15,
-        backgroundColor: '#4A90E2',
+        backgroundColor: '#4CAF50',
     },
     backButton: {
         fontSize: 16,
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
     },
     userBubble: {
-        backgroundColor: '#4A90E2',
+        backgroundColor: '#4CAF50',
     },
     botBubble: {
         backgroundColor: '#fff',
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
         marginRight: 10,
     },
     sendButton: {
-        backgroundColor: '#4A90E2',
+        backgroundColor: '#4CAF50',
         borderRadius: 25,
         paddingHorizontal: 20,
         justifyContent: 'center',

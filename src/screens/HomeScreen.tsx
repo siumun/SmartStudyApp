@@ -9,7 +9,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import viewPlanned from './ViewPlannedScreen'
 
 //--swipe--
-
 const SWIPE_THRESHOLD = 60;
 const DELETE_BUTTON_WIDTH = 80;
 
@@ -119,11 +118,12 @@ const DashboardCards = ({
   doneTasks: any[];
 }) => {
   const totalDuration = doneTasks.reduce((sum, t) => sum + (t.duration || 0), 0);
-  const hours = Math.floor(totalDuration / 60);
-  const mins = totalDuration % 60;
+  const hours = Math.floor(totalDuration / 3600);
+  const mins = Math.floor((totalDuration % 3600) / 60);
+  const secs = totalDuration % 60;
   const durationLabel = hours > 0
-    ? mins > 0 ? `${hours}h ${mins}m` : `${hours}h`
-    : `${mins}m`;
+  ? mins > 0 ? `${hours}h ${mins}m` : `${hours}h`
+  : mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
  
   return (
     <View style={dashStyles.row}>
@@ -142,8 +142,8 @@ const DashboardCards = ({
     </View>
   );
 };
-//--Home Screen--
 
+//--Home Screen--
 const HomeScreen = ({ navigation }: any) => {
   const [plannedTasks, setPlannedTask] = useState<any[]>([]);
   const [doneTasks, setDoneTask] = useState<any[]>([]);
@@ -154,28 +154,11 @@ const HomeScreen = ({ navigation }: any) => {
       loadDoneTasks();
       
     });
-    seedTestData();
+
     return unsubscribe;
   }, [navigation]);
 
-const seedTestData = () => {
-  db.transaction((tx: any) => {
-    // Insert done tasks
-    tx.executeSql(`INSERT INTO tasks (title, status) VALUES ('Design mockup', 'done');`);
-    tx.executeSql(`INSERT INTO tasks (title, status) VALUES ('Write report', 'done');`);
-    tx.executeSql(`INSERT INTO tasks (title, status) VALUES ('Team meeting', 'done');`);
-    // Insert planned tasks
-    tx.executeSql(`INSERT INTO tasks (title, status) VALUES ('Fix bugs', 'planned');`);
-    tx.executeSql(`INSERT INTO tasks (title, status) VALUES ('Code review', 'planned');`);
-    // Insert sessions with duration (minutes)
-    tx.executeSql(`INSERT INTO sessions (task_id, duration) VALUES (1, 90);`);
-    tx.executeSql(`INSERT INTO sessions (task_id, duration) VALUES (2, 45);`);
-    tx.executeSql(`INSERT INTO sessions (task_id, duration) VALUES (3, 120);`);
-  },
-  (error: any) => console.log('Seed error:', error),
-  () => { console.log('Seeded!'); loadPlannedTasks(); loadDoneTasks(); }
-  );
-};
+
 
   const loadPlannedTasks = () => {
     db.transaction((tx: any) => {
@@ -289,7 +272,6 @@ const seedTestData = () => {
 };
 
 // --helper--
-
 const SectionHeader = ({ label, count }: { label: string; count: number }) => (
   <View style={styles.sectionHeader}>
     <Text style={styles.sectionLabel}>{label}</Text>
@@ -320,7 +302,6 @@ const styles = StyleSheet.create({
   badge: { backgroundColor: '#E8E8E4', borderRadius: 10, paddingHorizontal: 7, paddingVertical: 2 },
   badgeText: { fontSize: 12, fontWeight: '600', color: '#888' },
 
-  // Swipe container
   swipeWrapper: {
     marginBottom: 8,
     borderRadius: 12,
@@ -343,7 +324,6 @@ const styles = StyleSheet.create({
   deleteIcon: { fontSize: 20 },
   deleteLabel: { fontSize: 11, fontWeight: '600', color: '#fff', letterSpacing: 0.3 },
 
-  // Card
   card: {
     backgroundColor: '#FFFFFF',
     borderRadius: 12,

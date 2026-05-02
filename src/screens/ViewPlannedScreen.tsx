@@ -107,8 +107,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8F9FB'
   },
 
-
-  // 🔹 Status pill
   statusPill: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -138,7 +136,6 @@ const styles = StyleSheet.create({
   pillTextPlanned: { color: '#4A90E2' },
   pillTextDone: { color: '#5CB85C' },
 
-  // 🔹 Title (cleaner hierarchy)
   title: {
     fontSize: 26,
     fontWeight: '700',
@@ -147,19 +144,16 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
 
-  // 🔹 Card (more modern look)
   infoCard: {
     backgroundColor: '#fff',
     borderRadius: 16,
     padding: 18,
     
-    // iOS shadow
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.06,
     shadowRadius: 6,
 
-    // Android
     elevation: 2,
   },
 
