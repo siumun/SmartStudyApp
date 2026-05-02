@@ -11,7 +11,6 @@ const TimerScreen = ({route, navigation}: any) => {
 
   const intervalRef = useRef<any>(null);
 
-  // TIMER
   useEffect(() => {
     if (isRunning) {
       intervalRef.current = setInterval(() => {
@@ -22,7 +21,7 @@ const TimerScreen = ({route, navigation}: any) => {
     return () => clearInterval(intervalRef.current);
   }, [isRunning]);
 
-  // PAUSE / RESUME
+  // pause &resume
   const togglePause = () => {
     if (isRunning) {
       clearInterval(intervalRef.current);
@@ -32,38 +31,37 @@ const TimerScreen = ({route, navigation}: any) => {
     }
   };
 
-  // END TASK
+  // End task
   const endTask = () => {
-    clearInterval(intervalRef.current);
+  clearInterval(intervalRef.current);
+  const finalDuration = seconds;
 
-    const finalDuration = seconds;
-
-    // ✅ Must use db.transaction() for react-native-sqlite-storage
-    db.transaction((tx: any) => {
-
-      // Save session with duration
+  db.transaction(
+    (tx: any) => {
       tx.executeSql(
-        'INSERT OR REPLACE INTO sessions (task_id, duration) VALUES (?, ?)',
-        [taskId, finalDuration],
-        () => console.log('Session saved:', finalDuration),
-        (err: any) => console.log('SESSION ERROR:', err),
+        'UPDATE sessions SET duration = ? WHERE task_id = ?',
+        [finalDuration, taskId],
+        // @ts-ignore
+        (_, result) => console.log('Session saved, rows affected:', result.rowsAffected),
+        // @ts-ignore
+        (_, err) => { console.log('SESSION ERROR:', err); return true; }
       );
 
-      // Update task status to done
       tx.executeSql(
         'UPDATE tasks SET status = ? WHERE id = ?',
         ['done', taskId],
-        () => console.log('Task marked done'),
-        (err: any) => console.log('UPDATE ERROR:', err),
+        // @ts-ignore
+        (_, result) => console.log('Task marked done, rows affected:', result.rowsAffected),
+        // @ts-ignore
+        (_, err) => { console.log('UPDATE ERROR:', err); return true; }
       );
-
     },
     (err: any) => console.log('TRANSACTION ERROR:', err),
-    () => navigation.popToTop(), // ✅ Navigate only after both SQLs succeed
-    );
-  };
+    () => navigation.popToTop()
+  );
+};
 
-  // FORMAT TIME
+  //Time format
   const formatTime = () => {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
@@ -82,12 +80,12 @@ const TimerScreen = ({route, navigation}: any) => {
       backgroundColor: '#F4F6FB',
     }}>
 
-      {/* TIMER */}
+      {/* Timer*/}
       <Text style={{fontSize: 40, fontWeight: 'bold'}}>
         {formatTime()}
       </Text>
 
-      {/* PAUSE / RESUME */}
+      {/* Pause & Resume*/}
       <TouchableOpacity
         onPress={togglePause}
         style={{
@@ -103,7 +101,7 @@ const TimerScreen = ({route, navigation}: any) => {
         </Text>
       </TouchableOpacity>
 
-      {/* END TASK */}
+      {/* End Task */}
       <TouchableOpacity
         onPress={endTask}
         style={{

@@ -9,6 +9,9 @@ import {
   StyleSheet,
 } from 'react-native';
 import db from '../database/db';
+import Header from '../components/Header';
+import PrimaryButton from '../components/PrimaryButton';
+
 
 const StartNowScreen = ({navigation, route}: any) => {
 
@@ -18,6 +21,7 @@ const StartNowScreen = ({navigation, route}: any) => {
   const _create = () => {
     if (!title.trim()) {
       ToastAndroid.show('Please enter title', ToastAndroid.SHORT);
+      
       return;
     }
 
@@ -28,7 +32,7 @@ const StartNowScreen = ({navigation, route}: any) => {
         (_: any, results: any) => {
           if (results.rowsAffected > 0) {
             const taskId = results.insertId;
-            navigation.replace('Timer', { taskId });
+            navigation.replace('Location', { taskId });
           }
         },
         (err: any) => console.log('INSERT ERROR:', err),
@@ -38,11 +42,7 @@ const StartNowScreen = ({navigation, route}: any) => {
 
   return (
     <View style={{flex: 1, backgroundColor: '#F4F6FB', padding: 16}}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Text style={styles.backIcon}>‹</Text>
-        </TouchableOpacity>
-      </View>
+      <Header navigation={navigation} />
 
       <Text style={{fontWeight: 'bold'}}>Task Title</Text>
       <TextInput
@@ -57,36 +57,12 @@ const StartNowScreen = ({navigation, route}: any) => {
         <Text>{currentDate.toDateString()}</Text>
       </View>
 
-      <TouchableNativeFeedback onPress={_create}>
-        <View style={{marginTop: 30, backgroundColor: '#4CAF50', padding: 15, borderRadius: 10}}>
-          <Text style={{color: '#fff', textAlign: 'center'}}>Start Now</Text>
-        </View>
-      </TouchableNativeFeedback>
+      <PrimaryButton 
+      title="Next"
+      onPress={_create}
+      />
     </View>
   );
 };
 
 export default StartNowScreen;
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F7F7F5' },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 56,
-    paddingBottom: 12,
-  },
-  backButton: {
-    width: 36, height: 36, borderRadius: 10,
-    backgroundColor: '#EBEBEA',
-    alignItems: 'center', justifyContent: 'center',
-  },
-  backIcon: { fontSize: 24, color: '#1A1A1A', lineHeight: 28 },
-  editButton: {
-    paddingHorizontal: 16, paddingVertical: 7,
-    borderRadius: 10, backgroundColor: '#1A1A1A',
-  },
-  editLabel: { fontSize: 13, fontWeight: '600', color: '#fff', letterSpacing: 0.3 },
-});

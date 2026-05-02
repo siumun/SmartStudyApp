@@ -4,6 +4,7 @@ import {
   Modal, ScrollView, ToastAndroid, StyleSheet,
 } from 'react-native';
 import db from '../database/db';
+import Header from '../components/Header';
 
 const EditScreen = ({navigation, route}: any) => {
 
@@ -82,11 +83,7 @@ const EditScreen = ({navigation, route}: any) => {
   return (
     <View style={{flex: 1, backgroundColor: '#F4F6FB', paddingTop: 12}}>
 
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Text style={styles.backIcon}>‹</Text>
-        </TouchableOpacity>
-      </View>
+      <Header navigation={navigation} />
 
       <View style={{margin: 16}}>
         <Text style={{fontWeight: 'bold', marginBottom: 5}}>Plan Title</Text>
@@ -183,22 +180,3 @@ const EditScreen = ({navigation, route}: any) => {
 };
 
 export default EditScreen;
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F7F7F5' },
-  header: {
-    flexDirection: 'row', justifyContent: 'space-between',
-    alignItems: 'center', paddingHorizontal: 20,
-    paddingTop: 56, paddingBottom: 12,
-  },
-  backButton: {
-    width: 36, height: 36, borderRadius: 10,
-    backgroundColor: '#EBEBEA', alignItems: 'center', justifyContent: 'center',
-  },
-  backIcon: { fontSize: 24, color: '#1A1A1A', lineHeight: 28 },
-  editButton: {
-    paddingHorizontal: 16, paddingVertical: 7,
-    borderRadius: 10, backgroundColor: '#1A1A1A',
-  },
-  editLabel: { fontSize: 13, fontWeight: '600', color: '#fff', letterSpacing: 0.3 },
-});

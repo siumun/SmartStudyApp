@@ -4,6 +4,9 @@ import {
   StatusBar, ScrollView
 } from 'react-native';
 import db from '../database/db';
+import Header from '../components/Header';
+import PrimaryButton from '../components/PrimaryButton';
+
 
 export const formatted = (inputDate: Date) => {
   const daysText = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -50,145 +53,127 @@ const ViewPlannedScreen = ({ route, navigation }: any) => {
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#F7F7F5" />
 
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Text style={styles.backIcon}>‹</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.editButton}
-          onPress={() => navigation.navigate('Edit', { id: route.params.id, refresh: _queryByID })}
-        >
-          <Text style={styles.editLabel}>Edit</Text>
-        </TouchableOpacity>
-      </View>
+      <Header 
+      navigation={navigation} 
+      showEdit={true} 
+      onEditPress={() => navigation.navigate('Edit')}
+      />
 
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+<View  style={{flex: 1, backgroundColor: '#F4F6FB', padding: 16}}>
 
-        {/* Status pill */}
-        <View style={[styles.statusPill, isDone ? styles.pillDone : styles.pillPlanned]}>
-          <View style={[styles.pillDot, isDone ? styles.pillDotDone : styles.pillDotPlanned]} />
-          <Text style={[styles.pillText, isDone ? styles.pillTextDone : styles.pillTextPlanned]}>
-            {isDone ? 'Completed' : 'Planned'}
-          </Text>
-        </View>
+  <View style={[
+    styles.statusPill, 
+    isDone ? styles.pillDone : styles.pillPlanned
+  ]}>
+    <View style={[
+      styles.pillDot, 
+      isDone ? styles.pillDotDone : styles.pillDotPlanned
+    ]} />
+    <Text style={[
+      styles.pillText, 
+      isDone ? styles.pillTextDone : styles.pillTextPlanned
+    ]}>
+      {isDone ? 'Completed' : 'Planned'}
+    </Text>
+  </View>
 
-        {/* Title */}
-        <Text style={styles.title}>{title}</Text>
+  {/* Title */}
+  <Text style={styles.title}>{title}</Text>
 
-        {/* Date card */}
-        <View style={styles.infoCard}>
-          <View>
-            <Text style={styles.infoLabel}>Scheduled for</Text>
-            <Text style={styles.infoValue}>{formatted(date)}</Text>
-          </View>
-        </View>
+  {/* Date card */}
+  <View style={styles.infoCard}>
+    <View>
+      <Text style={styles.infoLabel}>Scheduled</Text>
+      <Text style={styles.infoValue}>{formatted(date)}</Text>
+    </View>
+  </View>
 
-      </ScrollView>
-        <View style={styles.footer}>
-          <TouchableOpacity
-            style={styles.startButton}
-            activeOpacity={0.85}
-            onPress={() => navigation.navigate('Timer', { taskId: route.params.id })}
-          >
-            <Text style={styles.startLabel}>  Start Now</Text>
-          </TouchableOpacity>
-        </View>
+  <PrimaryButton
+        title="Next" 
+        onPress={() => navigation.navigate('Location', { taskId: route.params.id })}
+  />
+</View>
+      
     </View>
   );
 };
 
+
 export default ViewPlannedScreen;
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F7F7F5' },
-
-  // Header
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 56,
-    paddingBottom: 12,
+  container: { 
+    flex: 1, 
+    backgroundColor: '#F8F9FB'
   },
-  backButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    backgroundColor: '#EBEBEA',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  backIcon: { fontSize: 24, color: '#1A1A1A', lineHeight: 28 },
-  editButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 7,
-    borderRadius: 10,
-    backgroundColor: '#1A1A1A',
-  },
-  editLabel: { fontSize: 13, fontWeight: '600', color: '#fff', letterSpacing: 0.3 },
 
-  // Content
-  content: { paddingHorizontal: 24, paddingTop: 12, paddingBottom: 40 },
 
+  // 🔹 Status pill
   statusPill: {
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-start',
-    gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 5,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
     borderRadius: 20,
-    marginBottom: 16,
+    marginBottom: 20,
   },
-  pillPlanned: { backgroundColor: '#EAF2FF' },
-  pillDone: { backgroundColor: '#EAFAF1' },
-  pillDot: { width: 6, height: 6, borderRadius: 3 },
+  pillPlanned: { backgroundColor: '#EEF4FF' },
+  pillDone: { backgroundColor: '#EAF7EF' },
+
+  pillDot: { 
+    width: 7, 
+    height: 7, 
+    borderRadius: 3.5,
+    marginRight: 6 
+  },
   pillDotPlanned: { backgroundColor: '#4A90E2' },
   pillDotDone: { backgroundColor: '#5CB85C' },
-  pillText: { fontSize: 12, fontWeight: '600', letterSpacing: 0.4 },
+
+  pillText: { 
+    fontSize: 12, 
+    fontWeight: '600',
+    letterSpacing: 0.3
+  },
   pillTextPlanned: { color: '#4A90E2' },
   pillTextDone: { color: '#5CB85C' },
 
+  // 🔹 Title (cleaner hierarchy)
   title: {
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: '700',
-    color: '#1A1A1A',
-    letterSpacing: -0.5,
-    lineHeight: 36,
-    marginBottom: 28,
+    color: '#111',
+    lineHeight: 34,
+    marginBottom: 24,
   },
 
+  // 🔹 Card (more modern look)
   infoCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 14,
     backgroundColor: '#fff',
-    borderRadius: 14,
-    padding: 16,
+    borderRadius: 16,
+    padding: 18,
+    
+    // iOS shadow
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 1,
-  },
-  infoIcon: { fontSize: 22 },
-  infoLabel: { fontSize: 11, color: '#999', fontWeight: '500', marginBottom: 2, textTransform: 'uppercase', letterSpacing: 0.5 },
-  infoValue: { fontSize: 15, color: '#1A1A1A', fontWeight: '600' },
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
 
-  // Footer
-  footer: {
-    paddingHorizontal: 24,
-    paddingBottom: 36,
-    paddingTop: 12,
-    backgroundColor: '#F7F7F5',
+    // Android
+    elevation: 2,
   },
-  startButton: {
-    backgroundColor: '#1A1A1A',
-    borderRadius: 14,
-    paddingVertical: 16,
-    alignItems: 'center',
+
+  infoLabel: { 
+    fontSize: 11, 
+    color: '#888', 
+    fontWeight: '600',
+    marginBottom: 4,
+    letterSpacing: 0.6,
   },
-  startLabel: { fontSize: 16, fontWeight: '700', color: '#fff', letterSpacing: 0.3 },
+
+  infoValue: { 
+    fontSize: 16, 
+    color: '#111', 
+    fontWeight: '600' 
+  },
 });

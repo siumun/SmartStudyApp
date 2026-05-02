@@ -5,6 +5,8 @@ import {
   ToastAndroid, StyleSheet,
 } from 'react-native';
 import db from '../database/db';
+import Header from '../components/Header';
+import PrimaryButton from '../components/PrimaryButton';
 
 const CreateScreen = ({navigation, route}: any) => {
 
@@ -39,7 +41,6 @@ const CreateScreen = ({navigation, route}: any) => {
       return;
     }
 
-    // ✅ Must use db.transaction()
     db.transaction((tx: any) => {
       tx.executeSql(
         'INSERT INTO tasks (title, date, status) VALUES (?, ?, ?)',
@@ -62,14 +63,10 @@ const CreateScreen = ({navigation, route}: any) => {
   return (
     <View style={{flex: 1, backgroundColor: '#F4F6FB', paddingTop: 12}}>
 
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Text style={styles.backIcon}>‹</Text>
-        </TouchableOpacity>
-      </View>
+      <Header navigation={navigation} />
 
       <View style={{margin: 16}}>
-        <Text style={{fontWeight: 'bold', marginBottom: 5, color: '#000'}}>Plan Title</Text>
+        <Text style={{fontWeight: 'bold', marginBottom: 5, color: '#000000'}}>Plan Title</Text>
         <TextInput
           value={newtitle}
           onChangeText={setTitle}
@@ -79,7 +76,7 @@ const CreateScreen = ({navigation, route}: any) => {
       </View>
 
       <View style={{margin: 16}}>
-        <Text style={{fontWeight: 'bold', marginBottom: 5, color: '#000'}}>Date</Text>
+        <Text style={{fontWeight: 'bold', marginBottom: 5, color: '#000000'}}>Date</Text>
         <TouchableOpacity
           onPress={() => {
             setTempYear(newdate.getFullYear());
@@ -152,33 +149,13 @@ const CreateScreen = ({navigation, route}: any) => {
         </View>
       </Modal>
 
-      <TouchableNativeFeedback onPress={_create}>
-        <View style={{margin: 16, backgroundColor: '#4CAF50', padding: 15, borderRadius: 10, alignItems: 'center'}}>
-          <Text style={{color: '#ffffff', fontWeight: 'bold'}}>Save Plan</Text>
-        </View>
-      </TouchableNativeFeedback>
+      <PrimaryButton 
+      title="Create" 
+      onPress={_create} 
+      />
 
     </View>
   );
 };
 
 export default CreateScreen;
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F7F7F5' },
-  header: {
-    flexDirection: 'row', justifyContent: 'space-between',
-    alignItems: 'center', paddingHorizontal: 20,
-    paddingTop: 56, paddingBottom: 12,
-  },
-  backButton: {
-    width: 36, height: 36, borderRadius: 10,
-    backgroundColor: '#EBEBEA', alignItems: 'center', justifyContent: 'center',
-  },
-  backIcon: { fontSize: 24, color: '#1A1A1A', lineHeight: 28 },
-  editButton: {
-    paddingHorizontal: 16, paddingVertical: 7,
-    borderRadius: 10, backgroundColor: '#1A1A1A',
-  },
-  editLabel: { fontSize: 13, fontWeight: '600', color: '#fff', letterSpacing: 0.3 },
-});

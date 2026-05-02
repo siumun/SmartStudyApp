@@ -8,7 +8,7 @@ import db from '../database/db';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import viewPlanned from './ViewPlannedScreen'
 
-// -----------------------swipe-----------------
+//--swipe--
 
 const SWIPE_THRESHOLD = 60;
 const DELETE_BUTTON_WIDTH = 80;
@@ -32,7 +32,6 @@ const SwipeableTaskCard = ({
       onMoveShouldSetPanResponder: (_, g) =>
         Math.abs(g.dx) > 8 && Math.abs(g.dy) < 15,
       onPanResponderMove: (_, g) => {
-        // Clamp to negative only (left swipe)
         const newX = Math.min(0, Math.max(g.dx, -(DELETE_BUTTON_WIDTH + 10)));
         translateX.setValue(newX);
       },
@@ -85,22 +84,17 @@ const SwipeableTaskCard = ({
     <View style={styles.swipeWrapper}>
       <View style={styles.deleteBackground}>
         <TouchableOpacity style={styles.deleteButton} onPress={handleDelete} activeOpacity={0.8}>
-          <Icon 
-          name="delete" 
-          size={24}
-          color="white"
-          style={styles.deleteIcon}
-          />
+          <Icon name="delete" size={24} color="white" />
           <Text style={styles.deleteLabel}>Delete</Text>
         </TouchableOpacity>
       </View>
 
       <Animated.View
-        style={[styles.card, status === 'done' && styles.cardDone, { transform: [{ translateX }] }]}
+        style={[styles.card, { transform: [{ translateX }] }]}
         {...panResponder.panHandlers}
       >
         <TouchableOpacity
-          style={styles.cardInner}
+          style={[styles.cardInner, status === 'done' && styles.cardInnerDone]}
           onPress={handlePress}
           activeOpacity={0.75}
         >
@@ -115,7 +109,7 @@ const SwipeableTaskCard = ({
   );
 };
 
-//-----------------------Home Screen-----------------
+//--Home Screen--
 
 const HomeScreen = ({ navigation }: any) => {
   const [plannedTasks, setPlannedTask] = useState<any[]>([]);
@@ -135,7 +129,6 @@ const HomeScreen = ({ navigation }: any) => {
         "SELECT * FROM tasks WHERE status = 'planned';",
         [],
         (_: any, results: any) => {
-
           const rows = [];
           for (let i = 0; i < results.rows.length; i++) rows.push(results.rows.item(i));
           setPlannedTask(rows);
@@ -231,7 +224,7 @@ const HomeScreen = ({ navigation }: any) => {
   );
 };
 
-// -----------------------helper-----------------
+// --helper--
 
 const SectionHeader = ({ label, count }: { label: string; count: number }) => (
   <View style={styles.sectionHeader}>
@@ -250,14 +243,13 @@ const EmptyState = ({ message }: { message: string }) => (
 
 export default HomeScreen;
 
-// ------------------------Styles-----------------
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F7F7F5' },
   header: { paddingHorizontal: 24, paddingTop: 56, paddingBottom: 20 },
   headerTitle: { fontSize: 32, fontWeight: '700', color: '#1A1A1A', letterSpacing: -0.5 },
   headerSubtitle: { fontSize: 14, color: '#999', marginTop: 4 },
-  scrollContent: { paddingHorizontal: 24, },
+  scrollContent: { paddingHorizontal: 24 },
 
   sectionHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 24, marginBottom: 12 },
   sectionLabel: { fontSize: 13, fontWeight: '600', color: '#888', textTransform: 'uppercase', letterSpacing: 0.8 },
@@ -273,7 +265,7 @@ const styles = StyleSheet.create({
   deleteBackground: {
     ...StyleSheet.absoluteFillObject,
     borderRadius: 12,
-    backgroundColor: '#b9b4b4',
+    backgroundColor: '#FF3B30',
     justifyContent: 'center',
     alignItems: 'flex-end',
     paddingRight: 20,
@@ -284,8 +276,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 3,
   },
-  deleteIcon: { fontSize: 20, marginLeft: 35 },
-  deleteLabel: { fontSize: 11, marginLeft: 35, fontWeight: '600', color: '#fff', letterSpacing: 0.3 },
+  deleteIcon: { fontSize: 20 },
+  deleteLabel: { fontSize: 11, fontWeight: '600', color: '#fff', letterSpacing: 0.3 },
 
   // Card
   card: {
@@ -297,7 +289,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 1,
   },
-  cardDone: { opacity: 0.6 },
   cardInner: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -305,6 +296,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     gap: 12,
   },
+  cardInnerDone: { opacity: 0.6 },
   dot: { width: 8, height: 8, borderRadius: 4 },
   dotPlanned: { backgroundColor: '#4A90E2' },
   dotDone: { backgroundColor: '#5CB85C' },

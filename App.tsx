@@ -20,6 +20,7 @@ import ViewPlannedScreen from './src/screens/ViewPlannedScreen';
 import ViewDoneScreen from './src/screens/ViewDoneScreen';
 import EditScreen from './src/screens/EditScreen';
 import TimerScreen from './src/screens/TimerScreen';
+import GetLocationScreen from './src/screens/GetLocationScreen';
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
@@ -91,6 +92,7 @@ export default function App() {
         <Stack.Screen name="ViewDone" component={ViewDoneScreen} />
         <Stack.Screen name="Edit" component={EditScreen} />
         <Stack.Screen name="Timer" component={TimerScreen} />
+        <Stack.Screen name="Location" component={GetLocationScreen} />
 
       </Stack.Navigator>
     </NavigationContainer>
