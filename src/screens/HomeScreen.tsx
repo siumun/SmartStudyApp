@@ -106,6 +106,7 @@ const SwipeableTaskCard = ({
       </Animated.View>
     </View>
   );
+
 };
 
 const DashboardCards = ({
@@ -209,6 +210,8 @@ const HomeScreen = ({ navigation }: any) => {
       );
     });
   }, []);
+
+  
 
   return (
     <View style={styles.container}>

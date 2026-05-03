@@ -59,7 +59,7 @@ const ViewPlannedScreen = ({ route, navigation }: any) => {
       onEditPress={() => navigation.navigate('Edit')}
       />
 
-<View  style={{flex: 1, backgroundColor: '#F4F6FB', padding: 16}}>
+<View  style={{flex: 1, backgroundColor: '#F7F7F5', padding: 16}}>
 
   <View style={[
     styles.statusPill, 
@@ -104,7 +104,7 @@ export default ViewPlannedScreen;
 const styles = StyleSheet.create({
   container: { 
     flex: 1, 
-    backgroundColor: '#F8F9FB'
+    backgroundColor: '#F7F7F5'
   },
 
   statusPill: {

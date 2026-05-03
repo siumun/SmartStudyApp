@@ -32,7 +32,50 @@ app.post('/api/chatbot', (req, res) => {
     res.json({ reply });
 });
 
+let locationHistory = [];
+app.post('/api/save-location', (req, res) => {
+    const { latitude, longitude, timestamp } = req.body;
+    
+    if (latitude === undefined || longitude === undefined) {
+        return res.status(400).json({ 
+            success: false, 
+            error: 'Missing latitude or longitude' 
+        });
+    }
+    
+    const locationRecord = {
+        id: locationHistory.length + 1,
+        lat: latitude,
+        lng: longitude,
+        timestamp: timestamp || new Date().toISOString(),
+        createdAt: new Date().toISOString()
+    };
+    
+    locationHistory.unshift(locationRecord);
+    
+    if (locationHistory.length > 100) {
+        locationHistory = locationHistory.slice(0, 100);
+    }
+    
+    console.log('Location saved:', locationRecord);
+    
+    res.json({
+        success: true,
+        message: 'Location saved to cloud',
+        data: locationRecord
+    });
+});
 
+app.get('/api/location-history', (req, res) => {
+    const limit = parseInt(req.query.limit) || 20;
+    const history = locationHistory.slice(0, limit);
+    
+    res.json({
+        success: true,
+        count: history.length,
+        data: history
+    });
+});
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on http://0.0.0.0:${PORT}`);

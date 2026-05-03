@@ -71,7 +71,7 @@ const CreateScreen = ({navigation, route}: any) => {
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: '#F4F6FB', paddingTop: 12}}>
+    <View style={{flex: 1, backgroundColor: '#F7F7F5', paddingTop: 12}}>
 
       <Header navigation={navigation} />
 

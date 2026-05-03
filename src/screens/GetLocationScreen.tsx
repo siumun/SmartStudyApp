@@ -151,7 +151,7 @@ const App = ({ navigation, route }: any) => {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#F8F9FB" }}>
+    <View style={{ flex: 1, backgroundColor: "#F7F7F5" }}>
       <Header navigation={navigation} showEdit={false} />
 
       <View style={styles.screen}>

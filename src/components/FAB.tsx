@@ -59,7 +59,7 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: 90,
+    bottom: 20,
     right: 20,
     alignItems: 'flex-end',
   },

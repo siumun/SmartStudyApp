@@ -41,7 +41,7 @@ const StartNowScreen = ({navigation, route}: any) => {
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: '#F4F6FB', padding: 16}}>
+    <View style={{flex: 1, backgroundColor: '#F7F7F5', padding: 16}}>
       <Header navigation={navigation} />
 
       <Text style={{fontWeight: 'bold'}}>Task Title</Text>
